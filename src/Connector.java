@@ -2,9 +2,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Scanner;
+import javax.swing.*;
 
 public class Connector {
-    public static void main(String[] args){
+    static Scanner reader = new Scanner(System.in);
+    static Statement stat = null;
+
+    public Connector() {
         final String DB_URL = "jdbc:mariadb://172.17.134.126:3306/TEST";
         final String USER = "remote";
         final String PWD = "123456";
@@ -15,21 +20,27 @@ public class Connector {
             Connection con = DriverManager.getConnection(DB_URL, USER, PWD);
             System.out.println("Database connected.");
 
-            Statement stat = con.createStatement();
-
-            String[] para = getParameters();
-            String colNames = para[0], tableNames = para[1], condition = para[2];
-            String command = getCommand(colNames, tableNames, condition);
-            ResultSet res = stat.executeQuery(command);
-
-            printResult(res);
-
+            stat = con.createStatement();
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
 
+    public static ResultSet query(String command){
+        try{
+            System.out.println(command);
+            ResultSet result = stat.executeQuery(command);
+            return result;
+        }
+        catch (Exception e){
+            System.out.println("HERE");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /*
     public static String getCommand(String colNames, String tableNames, String condition){
         // Generate the query command
         final String select = "SELECT";
@@ -40,11 +51,7 @@ public class Connector {
         else
             return select + ' ' + colNames + ' ' + from + ' ' + tableNames + ' '+ where + ' ' + condition;
     }
-
-    public static String[] getParameters(){
-        // API to get query parameters from the front end
-        return new String[]{"*", "STUDENT", "FName='Student'"};
-    }
+     */
 
     public static void printResult(ResultSet res){
         // Function to send result to from end
@@ -62,4 +69,5 @@ public class Connector {
             e.printStackTrace();
         }
     }
+
 }
