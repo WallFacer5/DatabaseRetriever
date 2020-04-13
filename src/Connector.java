@@ -34,7 +34,6 @@ public class Connector {
             return result;
         }
         catch (Exception e){
-            System.out.println("HERE");
             e.printStackTrace();
             return null;
         }
